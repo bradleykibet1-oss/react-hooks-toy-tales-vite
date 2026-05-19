@@ -1,6 +1,6 @@
 import React from "react";
 
-function ToyCard({ toy, onUpdateToy, onDeleteToy }) {
+function ToyCard({ toy, onLikeToy, onDeleteToy }) {
   const { id, name, image, likes } = toy;
 
   function handleLikeClick() {
@@ -12,7 +12,7 @@ function ToyCard({ toy, onUpdateToy, onDeleteToy }) {
       body: JSON.stringify({ likes: likes + 1 }),
     })
       .then((response) => response.json())
-      .then((updatedToy) => onUpdateToy(updatedToy));
+      .then((updatedToy) => onLikeToy(updatedToy));
   }
 
   function handleDeleteClick() {

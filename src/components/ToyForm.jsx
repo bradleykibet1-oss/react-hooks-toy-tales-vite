@@ -1,74 +1,52 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function ToyForm({ onAddToy }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    image: "",
-  });
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  function handleSubmit(e) {
+    e.preventDefault();
 
-    setFormData((formData) => ({
-      ...formData,
-      [name]: value,
-    }));
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
+    const newToy = {
+      name,
+      image,
+      likes: 0,
+    };
 
     fetch("http://localhost:3001/toys", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: formData.name,
-        image: formData.image,
-        likes: 0,
-      }),
+      body: JSON.stringify(newToy),
     })
-      .then((response) => response.json())
-      .then((newToy) => {
-        onAddToy(newToy);
-        setFormData({
-          name: "",
-          image: "",
-        });
-      });
+      .then((r) => r.json())
+      .then((toy) => onAddToy(toy));
+
+    setName("");
+    setImage("");
   }
 
   return (
-    <div className="container">
-      <form className="add-toy-form" onSubmit={handleSubmit}>
-        <h3>Create a toy!</h3>
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter a toy's name..."
-          className="input-text"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="image"
-          placeholder="Enter a toy's image URL..."
-          className="input-text"
-          value={formData.image}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="submit"
-          name="submit"
-          value="Create New Toy"
-          className="submit"
-        />
-      </form>
-    </div>
+    <form className="new-toy-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Toy name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <input
+        type="text"
+        placeholder="Image URL"
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+      />
+
+      <button type="submit">
+        Add Toy
+      </button>
+    </form>
   );
 }
 
